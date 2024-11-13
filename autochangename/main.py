@@ -1,8 +1,8 @@
 """ Module to automate message deletion. """
 
 import traceback
+import subprocess
 from datetime import datetime, timedelta, timezone
-
 from pagermaid.dependence import scheduler
 from pagermaid.services import bot
 from pagermaid.utils import pip_install, logs
@@ -60,7 +60,8 @@ async def change_name_auto():
         await bot.update_profile(last_name=_last_name)
         me = await bot.get_me()
         if me.last_name != _last_name:
-            raise Exception("修改 last_name 失败")
+            raise Exception
     except Exception as e:
         trac = "\n".join(traceback.format_exception(e))
         await logs.info(f"更新失败! \n{trac}")
+        subprocess.run(["systemctl", "restart", "pagermaid_pyro"], check=True)
